@@ -3,7 +3,7 @@ import fastify from 'fastify'
 import { faker } from '@faker-js/faker/locale/es'
 import data, { CreatePersonInput } from './data'
 const PORT = Number(process.env.PORT) || 3000
-
+const host = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`
 const app = fastify({
   logger: true
 })
@@ -73,7 +73,8 @@ app.get<{
 
 
 app.listen({
-  port: PORT
+  port: PORT,
+  host: host
 }, (err, address) => {
   if (err) {
     app.log.error(err)
