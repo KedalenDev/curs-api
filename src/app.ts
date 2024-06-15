@@ -2,7 +2,8 @@ import 'dotenv/config'
 import fastify from 'fastify'
 import { faker } from '@faker-js/faker/locale/es'
 import data, { CreatePersonInput } from './data'
-import { generateKey } from './auth'
+import { generateKey, validateKey } from './auth'
+import cors from '@fastify/cors'
 const PORT = Number(process.env.PORT) || 3000
 const host = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`
 const app = fastify({
@@ -10,11 +11,28 @@ const app = fastify({
 })
 
 //Allow all origins
-app.register(require('fastify-cors'), {
+app.register(cors, {
   origin: '*'
 });
 
 //Require API-KEY for all routes
+app.addHook('preHandler', async (request, reply) => {
+  if (request.url === '/create-key') {
+    return;
+  }
+  const key = request.headers.authorization;
+  if (!key) {
+    return reply.status(401).send({
+      message: 'Unauthorized'
+    });
+  }
+  const isValid = await validateKey(key);
+  if (!isValid) {
+    return reply.status(401).send({
+      message: 'Unauthorized'
+    });
+  }
+});
 
 app.get('/create-key', async (request, reply) => {
   const key = await generateKey();

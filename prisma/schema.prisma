@@ -15,3 +15,8 @@ model Persons {
   lastName String
   dateOfBirth String
 }
+
+model ApiKeys {
+  id Int @id
+  key String @unique
+}

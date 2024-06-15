@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "9.0.1",
     "@libsql/client": "^0.6.2",
     "@prisma/adapter-libsql": "^5.15.0",
     "@prisma/client": "5.15.0",

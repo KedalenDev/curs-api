@@ -52,6 +52,17 @@ async function updatePerson(id: number, person: CreatePersonInput) {
   return personUpdated;
 }
 
+async function saveEncryptionKey(key: string) {
+  const currentCount = await prisma.apiKeys.count();
+
+  return await prisma.apiKeys.create({
+    data: {
+      id: currentCount + 1,
+      key
+    }
+  })
+}
+
 async function deletePerson(id: number) {
   id = parseInt(id.toString());
   return await prisma.persons.delete({
@@ -65,6 +76,16 @@ async function clearDB() {
   return await prisma.persons.deleteMany();
 }
 
+async function getEncryptionKey(
+  key: string
+) {
+  return await prisma.apiKeys.findFirst({
+    where: {
+      key
+    }
+  });
+}
+
 export default {
   getPersonList,
   getPersonById,
@@ -72,4 +93,6 @@ export default {
   updatePerson,
   deletePerson,
   clearDB,
+  saveEncryptionKey,
+  getEncryptionKey
 };

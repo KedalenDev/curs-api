@@ -1,10 +1,11 @@
-import id from 'nanoid'
+import { nanoid } from 'nanoid'
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import data from './data';
 const encryptionKey = process.env.ENCRYPTION_KEY!;
 
 async function encryptAPIKey(
   key: string
-) : Promise<string> {
+): Promise<string> {
   //Encrypt the key using the encryptionKey
   const iv = randomBytes(16);
   const cipher = createCipheriv('aes-256-ctr', Buffer.from(encryptionKey), iv);
@@ -15,7 +16,7 @@ async function encryptAPIKey(
 
 async function decryptAPIKey(
   key: string
-) : Promise<string> {
+): Promise<string> {
   //Decrypt the key using the encryptionKey
   const parts = key.split(':');
   const iv = Buffer.from(parts[0], 'hex');
@@ -27,7 +28,15 @@ async function decryptAPIKey(
 }
 
 export async function generateKey() {
-  const key = id.nanoid();
-  console.log('Generated key:', key);
-  return await encryptAPIKey(key);
+  const key = nanoid();
+  const encryptedKey = await encryptAPIKey(key);
+  await data.saveEncryptionKey(key);
+  return encryptedKey;
+}
+
+
+export async function validateKey(key: string) {
+  const decryptedKey = await decryptAPIKey(key);
+  const dbKey = await data.getEncryptionKey(decryptedKey);
+  return dbKey !== null;
 }
