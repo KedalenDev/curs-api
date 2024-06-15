@@ -22,6 +22,7 @@ async function getPersonList() {
 }
 
 async function getPersonById(id: number) {
+  id = parseInt(id.toString());
   return await prisma.persons.findUnique({
     where: {
       id
@@ -41,6 +42,7 @@ async function createPerson(person: CreatePersonInput) {
 }
 
 async function updatePerson(id: number, person: CreatePersonInput) {
+  id = parseInt(id.toString());
   const personUpdated = await prisma.persons.update({
     where: { id },
     data: {
@@ -51,6 +53,7 @@ async function updatePerson(id: number, person: CreatePersonInput) {
 }
 
 async function deletePerson(id: number) {
+  id = parseInt(id.toString());
   return await prisma.persons.delete({
     where: {
       id
