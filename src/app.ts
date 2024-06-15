@@ -2,12 +2,26 @@ import 'dotenv/config'
 import fastify from 'fastify'
 import { faker } from '@faker-js/faker/locale/es'
 import data, { CreatePersonInput } from './data'
+import { generateKey } from './auth'
 const PORT = Number(process.env.PORT) || 3000
 const host = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`
 const app = fastify({
   logger: true
 })
 
+//Allow all origins
+app.register(require('fastify-cors'), {
+  origin: '*'
+});
+
+//Require API-KEY for all routes
+
+app.get('/create-key', async (request, reply) => {
+  const key = await generateKey();
+  return {
+    key
+  };
+});
 
 app.get('/', async (request, reply) => {
   return await data.getPersonList();
