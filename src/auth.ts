@@ -1,7 +1,16 @@
-import { nanoid } from 'nanoid'
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import data from './data';
 const encryptionKey = process.env.ENCRYPTION_KEY!;
+
+
+function generateRandomString(length: number) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
 
 async function encryptAPIKey(
   key: string
@@ -28,7 +37,7 @@ async function decryptAPIKey(
 }
 
 export async function generateKey() {
-  const key = nanoid();
+  const key = generateRandomString(32);
   const encryptedKey = await encryptAPIKey(key);
   await data.saveEncryptionKey(key);
   return encryptedKey;
