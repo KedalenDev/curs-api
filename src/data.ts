@@ -46,7 +46,10 @@ async function updatePerson(id: number, person: CreatePersonInput) {
   const personUpdated = await prisma.persons.update({
     where: { id },
     data: {
-      ...person
+      dateOfBirth: person.dateOfBirth,
+      lastName: person.lastName,
+      middleName: person.middleName,
+      name: person.name
     }
   });
   return personUpdated;
